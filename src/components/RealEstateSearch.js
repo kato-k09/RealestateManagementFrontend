@@ -191,6 +191,24 @@ const RealEstateSearch = () => {
     }
   };
 
+  // 築年数を計算する関数
+  const calculateBuildingAge = (buildingDate) => {
+    if (!buildingDate) return null;
+
+    const building = new Date(buildingDate);
+    const now = new Date();
+
+    let years = now.getFullYear() - building.getFullYear();
+    const monthDiff = now.getMonth() - building.getMonth();
+
+    // 月日を考慮して正確な年数を計算
+    if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < building.getDate())) {
+      years--;
+    }
+
+    return years;
+  };
+
   // 月収支を計算
   const calculateMonthlyProfit = (incomeAndExpenses) => {
     if (!incomeAndExpenses) return 0;
@@ -315,19 +333,15 @@ const RealEstateSearch = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                土地カテゴリ
+                地目
               </label>
-              <select
+              <input
+                  type="text"
                   value={searchParams.parcelCategory}
                   onChange={(e) => setSearchParams({...searchParams, parcelCategory: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">すべて</option>
-                <option value="宅地">宅地</option>
-                <option value="商業地">商業地</option>
-                <option value="工業地">工業地</option>
-                <option value="農地">農地</option>
-              </select>
+                  placeholder="地目を入力"
+              />
             </div>
 
             <div>
@@ -425,9 +439,9 @@ const RealEstateSearch = () => {
                             <div className="flex items-center">
                               <Calendar className="mr-1" size={16} />
                               <span>
-                          新築 {property.building?.buildingDate
-                                  ? new Date(property.building.buildingDate).toLocaleDateString('ja-JP')
-                                  : '築年月日未設定'}
+                          {property.building?.buildingDate
+                              ? `築${calculateBuildingAge(property.building.buildingDate)}年`
+                              : '築年月日未設定'}
                         </span>
                             </div>
 
@@ -532,7 +546,7 @@ const RealEstateSearch = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div><span className="font-medium">価格:</span> {formatPrice(selectedProperty.parcel?.parcelPrice)}</div>
                       <div><span className="font-medium">住所:</span> {selectedProperty.parcel?.parcelAddress || '未設定'}</div>
-                      <div><span className="font-medium">カテゴリ:</span> {selectedProperty.parcel?.parcelCategory || '未設定'}</div>
+                      <div><span className="font-medium">地目:</span> {selectedProperty.parcel?.parcelCategory || '未設定'}</div>
                       <div><span className="font-medium">面積:</span> {selectedProperty.parcel?.parcelSize ? `${selectedProperty.parcel.parcelSize}㎡` : '未設定'}</div>
                       <div className="md:col-span-2"><span className="font-medium">備考:</span> {selectedProperty.parcel?.parcelRemark || '未設定'}</div>
                     </div>
@@ -663,18 +677,14 @@ const RealEstateSearch = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">カテゴリ</label>
-                        <select
+                        <label className="block text-sm font-medium text-gray-700 mb-2">地目</label>
+                        <input
+                            type="text"
                             value={editingProperty.parcel?.parcelCategory || ''}
                             onChange={(e) => updateEditingProperty('parcel', 'parcelCategory', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                        >
-                          <option value="">選択してください</option>
-                          <option value="宅地">宅地</option>
-                          <option value="商業地">商業地</option>
-                          <option value="工業地">工業地</option>
-                          <option value="農地">農地</option>
-                        </select>
+                            placeholder="地目を入力"
+                        />
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">面積 (㎡)</label>

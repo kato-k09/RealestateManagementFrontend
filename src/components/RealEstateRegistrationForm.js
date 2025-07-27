@@ -182,20 +182,15 @@ const RealEstateRegistrationForm = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  土地カテゴリ
+                  地目
                 </label>
-                <select
+                <input
+                    type="text"
                     value={parcelData.parcelCategory}
                     onChange={(e) => setParcelData({...parcelData, parcelCategory: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">選択してください</option>
-                  <option value="宅地">宅地</option>
-                  <option value="商業地">商業地</option>
-                  <option value="工業地">工業地</option>
-                  <option value="農地">農地</option>
-                  <option value="その他">その他</option>
-                </select>
+                    placeholder="地目を入力してください（例：宅地、田、畑、山林など）"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
