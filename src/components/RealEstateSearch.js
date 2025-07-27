@@ -425,9 +425,9 @@ const RealEstateSearch = () => {
                             <div className="flex items-center">
                               <Calendar className="mr-1" size={16} />
                               <span>
-                          {property.building?.buildingDate
-                              ? new Date(property.building.buildingDate).toLocaleDateString('ja-JP')
-                              : '築年月日未設定'}
+                          新築 {property.building?.buildingDate
+                                  ? new Date(property.building.buildingDate).toLocaleDateString('ja-JP')
+                                  : '築年月日未設定'}
                         </span>
                             </div>
 
@@ -477,14 +477,10 @@ const RealEstateSearch = () => {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                         <div className="bg-blue-50 p-3 rounded">
-                          <div className="font-medium text-blue-800">土地価格</div>
-                          <div className="text-blue-600">{formatPrice(property.parcel?.parcelPrice)}</div>
-                        </div>
-                        <div className="bg-yellow-50 p-3 rounded">
-                          <div className="font-medium text-yellow-800">建物価格</div>
-                          <div className="text-yellow-600">{formatPrice(property.building?.buildingPrice)}</div>
+                          <div className="font-medium text-blue-800">取得価格</div>
+                          <div className="text-blue-600">{formatPrice((property.parcel?.parcelPrice || 0) + (property.building?.buildingPrice || 0))}</div>
                         </div>
                         <div className="bg-green-50 p-3 rounded">
                           <div className="font-medium text-green-800">家賃収入</div>
