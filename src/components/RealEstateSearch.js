@@ -103,7 +103,6 @@ const RealEstateSearch = () => {
       },
       building: property.building ? {...property.building} : {
         buildingPrice: 0,
-        buildingAddress: '',
         buildingType: '',
         buildingStructure: '',
         buildingSize: 0,
@@ -468,7 +467,7 @@ const RealEstateSearch = () => {
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 text-sm text-gray-600">
                             <div className="flex items-center">
                               <MapPin className="mr-1" size={16} />
-                              <span>{property.building?.buildingAddress || property.parcel?.parcelAddress || '住所未設定'}</span>
+                              <span>{property.parcel?.parcelAddress || '住所未設定'}</span>
                             </div>
 
                             <div className="flex items-center">
@@ -668,7 +667,6 @@ const RealEstateSearch = () => {
                     <h3 className="text-lg font-semibold text-yellow-800 mb-3">建物情報</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div><span className="font-medium">価格:</span> {formatPrice(selectedProperty.building?.buildingPrice)}</div>
-                      <div><span className="font-medium">住所:</span> {selectedProperty.building?.buildingAddress || '未設定'}</div>
                       <div><span className="font-medium">種別:</span> {selectedProperty.building?.buildingType || '未設定'}</div>
                       <div><span className="font-medium">構造:</span> {selectedProperty.building?.buildingStructure || '未設定'}</div>
                       <div><span className="font-medium">面積:</span> {selectedProperty.building?.buildingSize ? `${selectedProperty.building.buildingSize}㎡` : '未設定'}</div>
@@ -828,15 +826,6 @@ const RealEstateSearch = () => {
                             type="number"
                             value={editingProperty.building?.buildingPrice || ''}
                             onChange={(e) => updateEditingProperty('building', 'buildingPrice', parseInt(e.target.value) || 0)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">住所</label>
-                        <input
-                            type="text"
-                            value={editingProperty.building?.buildingAddress || ''}
-                            onChange={(e) => updateEditingProperty('building', 'buildingAddress', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                         />
                       </div>

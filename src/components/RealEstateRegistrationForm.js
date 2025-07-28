@@ -18,7 +18,6 @@ const RealEstateRegistrationForm = () => {
 
   const [buildingData, setBuildingData] = useState({
     buildingPrice: '',
-    buildingAddress: '',
     buildingType: '',
     buildingStructure: '',
     buildingSize: '',
@@ -113,7 +112,7 @@ const RealEstateRegistrationForm = () => {
       parcelSize: '', parcelRemark: '', isDeleted: false
     });
     setBuildingData({
-      buildingPrice: '', buildingAddress: '',
+      buildingPrice: '',
       buildingType: '', buildingStructure: '', buildingSize: '',
       buildingDate: '', buildingRemark: '', isDeleted: false
     });
@@ -233,18 +232,6 @@ const RealEstateRegistrationForm = () => {
                     onChange={(e) => setBuildingData({...buildingData, buildingPrice: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     placeholder="0"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  建物住所
-                </label>
-                <input
-                    type="text"
-                    value={buildingData.buildingAddress}
-                    onChange={(e) => setBuildingData({...buildingData, buildingAddress: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                    placeholder="建物住所を入力してください"
                 />
               </div>
               <div>
