@@ -19,7 +19,6 @@ const RealEstateRegistrationForm = () => {
   const [buildingData, setBuildingData] = useState({
     buildingPrice: '',
     buildingAddress: '',
-    buildingAddressNumber: '',
     buildingType: '',
     buildingStructure: '',
     buildingSize: '',
@@ -114,7 +113,7 @@ const RealEstateRegistrationForm = () => {
       parcelSize: '', parcelRemark: '', isDeleted: false
     });
     setBuildingData({
-      buildingPrice: '', buildingAddress: '', buildingAddressNumber: '',
+      buildingPrice: '', buildingAddress: '',
       buildingType: '', buildingStructure: '', buildingSize: '',
       buildingDate: '', buildingRemark: '', isDeleted: false
     });
@@ -250,18 +249,6 @@ const RealEstateRegistrationForm = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  建物住所番号
-                </label>
-                <input
-                    type="text"
-                    value={buildingData.buildingAddressNumber}
-                    onChange={(e) => setBuildingData({...buildingData, buildingAddressNumber: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                    placeholder="番地・号室など"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
                   建物種別
                 </label>
                 <select
@@ -376,7 +363,7 @@ const RealEstateRegistrationForm = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  保守管理費 (円)
+                  管理委託費 (円)
                 </label>
                 <input
                     type="number"

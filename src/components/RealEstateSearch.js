@@ -104,7 +104,6 @@ const RealEstateSearch = () => {
       building: property.building ? {...property.building} : {
         buildingPrice: 0,
         buildingAddress: '',
-        buildingAddressNumber: '',
         buildingType: '',
         buildingStructure: '',
         buildingSize: 0,
@@ -248,6 +247,8 @@ const RealEstateSearch = () => {
     const annualExpenses = ((property.incomeAndExpenses.managementFee || 0) +
         (property.incomeAndExpenses.repairFund || 0) +
         (property.incomeAndExpenses.maintenanceCost || 0) +
+        (property.incomeAndExpenses.principal || 0) +
+        (property.incomeAndExpenses.interest || 0) +
         (property.incomeAndExpenses.tax || 0) +
         (property.incomeAndExpenses.waterBill || 0) +
         (property.incomeAndExpenses.electricBill || 0) +
@@ -271,6 +272,44 @@ const RealEstateSearch = () => {
   const formatPrice = (price) => {
     if (!price) return '0円';
     return new Intl.NumberFormat('ja-JP').format(price) + '円';
+  };
+
+  // 検索結果の合計を計算する関数
+  const calculateTotals = () => {
+    const totals = {
+      acquisitionPrice: 0,
+      rent: 0,
+      expenses: 0,
+      monthlyProfit: 0,
+      count: realEstateList.length
+    };
+
+    realEstateList.forEach(property => {
+      // 取得価格の合計
+      totals.acquisitionPrice += (property.parcel?.parcelPrice || 0) + (property.building?.buildingPrice || 0);
+
+      // 家賃収入の合計
+      totals.rent += property.incomeAndExpenses?.rent || 0;
+
+      // 支出の合計
+      const propertyExpenses = (property.incomeAndExpenses?.managementFee || 0) +
+          (property.incomeAndExpenses?.repairFund || 0) +
+          (property.incomeAndExpenses?.maintenanceCost || 0) +
+          (property.incomeAndExpenses?.principal || 0) +
+          (property.incomeAndExpenses?.interest || 0) +
+          (property.incomeAndExpenses?.tax || 0) +
+          (property.incomeAndExpenses?.waterBill || 0) +
+          (property.incomeAndExpenses?.electricBill || 0) +
+          (property.incomeAndExpenses?.gasBill || 0) +
+          (property.incomeAndExpenses?.fireInsurance || 0);
+
+      totals.expenses += propertyExpenses;
+
+      // 月収支の合計
+      totals.monthlyProfit += calculateMonthlyProfit(property.incomeAndExpenses);
+    });
+
+    return totals;
   };
 
   // 編集用の入力値更新関数
@@ -328,6 +367,7 @@ const RealEstateSearch = () => {
                 <option value="戸建て">戸建て</option>
                 <option value="店舗">店舗</option>
                 <option value="事務所">事務所</option>
+                <option value="その他">その他</option>
               </select>
             </div>
 
@@ -501,9 +541,20 @@ const RealEstateSearch = () => {
                           <div className="text-green-600">{formatPrice(property.incomeAndExpenses?.rent)}</div>
                         </div>
                         <div className="bg-purple-50 p-3 rounded">
-                          <div className="font-medium text-purple-800">建物面積</div>
+                          <div className="font-medium text-purple-800">支出</div>
                           <div className="text-purple-600">
-                            {property.building?.buildingSize ? `${property.building.buildingSize}㎡` : '未設定'}
+                            {formatPrice(
+                                (property.incomeAndExpenses?.managementFee || 0) +
+                                (property.incomeAndExpenses?.repairFund || 0) +
+                                (property.incomeAndExpenses?.maintenanceCost || 0) +
+                                (property.incomeAndExpenses?.principal || 0) +
+                                (property.incomeAndExpenses?.interest || 0) +
+                                (property.incomeAndExpenses?.tax || 0) +
+                                (property.incomeAndExpenses?.waterBill || 0) +
+                                (property.incomeAndExpenses?.electricBill || 0) +
+                                (property.incomeAndExpenses?.gasBill || 0) +
+                                (property.incomeAndExpenses?.fireInsurance || 0)
+                            )}
                           </div>
                         </div>
                       </div>
@@ -511,6 +562,66 @@ const RealEstateSearch = () => {
                 ))}
               </div>
           )}
+
+          {/* 合計表示 */}
+          {!loading && realEstateList.length > 0 && (() => {
+            const totals = calculateTotals();
+            return (
+                <div className="p-6 bg-gray-100 border-t-2 border-gray-300">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">検索結果の合計</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div className="bg-white p-4 rounded-lg shadow">
+                      <div className="text-sm text-gray-600">物件数</div>
+                      <div className="text-2xl font-bold text-gray-800">{totals.count}件</div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow">
+                      <div className="text-sm text-gray-600">取得価格合計</div>
+                      <div className="text-2xl font-bold text-blue-600">{formatPrice(totals.acquisitionPrice)}</div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow">
+                      <div className="text-sm text-gray-600">家賃収入合計</div>
+                      <div className="text-2xl font-bold text-green-600">{formatPrice(totals.rent)}</div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow">
+                      <div className="text-sm text-gray-600">支出合計</div>
+                      <div className="text-2xl font-bold text-red-600">{formatPrice(totals.expenses)}</div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow">
+                      <div className="text-sm text-gray-600">月収支合計</div>
+                      <div className={`text-2xl font-bold ${totals.monthlyProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {formatPrice(totals.monthlyProfit)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 平均値表示 */}
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-white p-4 rounded-lg shadow">
+                      <div className="text-sm text-gray-600">平均取得価格</div>
+                      <div className="text-xl font-bold text-blue-600">
+                        {formatPrice(Math.round(totals.acquisitionPrice / totals.count))}
+                      </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow">
+                      <div className="text-sm text-gray-600">平均表面利回り</div>
+                      <div className="text-xl font-bold text-indigo-600">
+                        {totals.acquisitionPrice > 0
+                            ? ((totals.rent * 12 / totals.acquisitionPrice) * 100).toFixed(2) + '%'
+                            : '0.00%'}
+                      </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow">
+                      <div className="text-sm text-gray-600">平均実質利回り</div>
+                      <div className="text-xl font-bold text-purple-600">
+                        {totals.acquisitionPrice > 0
+                            ? (((totals.rent - totals.expenses) * 12 / totals.acquisitionPrice) * 100).toFixed(2) + '%'
+                            : '0.00%'}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            );
+          })()}
         </div>
 
         {/* 詳細モーダル */}
@@ -558,7 +669,6 @@ const RealEstateSearch = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div><span className="font-medium">価格:</span> {formatPrice(selectedProperty.building?.buildingPrice)}</div>
                       <div><span className="font-medium">住所:</span> {selectedProperty.building?.buildingAddress || '未設定'}</div>
-                      <div><span className="font-medium">住所番号:</span> {selectedProperty.building?.buildingAddressNumber || '未設定'}</div>
                       <div><span className="font-medium">種別:</span> {selectedProperty.building?.buildingType || '未設定'}</div>
                       <div><span className="font-medium">構造:</span> {selectedProperty.building?.buildingStructure || '未設定'}</div>
                       <div><span className="font-medium">面積:</span> {selectedProperty.building?.buildingSize ? `${selectedProperty.building.buildingSize}㎡` : '未設定'}</div>
@@ -574,7 +684,7 @@ const RealEstateSearch = () => {
                       <div><span className="font-medium">家賃収入:</span> {formatPrice(selectedProperty.incomeAndExpenses?.rent)}</div>
                       <div><span className="font-medium">管理費:</span> {formatPrice(selectedProperty.incomeAndExpenses?.managementFee)}</div>
                       <div><span className="font-medium">修繕積立金:</span> {formatPrice(selectedProperty.incomeAndExpenses?.repairFund)}</div>
-                      <div><span className="font-medium">保守管理費:</span> {formatPrice(selectedProperty.incomeAndExpenses?.maintenanceCost)}</div>
+                      <div><span className="font-medium">管理委託費:</span> {formatPrice(selectedProperty.incomeAndExpenses?.maintenanceCost)}</div>
                       <div><span className="font-medium">元本返済:</span> {formatPrice(selectedProperty.incomeAndExpenses?.principal)}</div>
                       <div><span className="font-medium">利息:</span> {formatPrice(selectedProperty.incomeAndExpenses?.interest)}</div>
                       <div><span className="font-medium">税金:</span> {formatPrice(selectedProperty.incomeAndExpenses?.tax)}</div>
@@ -731,15 +841,6 @@ const RealEstateSearch = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">住所番号</label>
-                        <input
-                            type="text"
-                            value={editingProperty.building?.buildingAddressNumber || ''}
-                            onChange={(e) => updateEditingProperty('building', 'buildingAddressNumber', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                        />
-                      </div>
-                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">種別</label>
                         <select
                             value={editingProperty.building?.buildingType || ''}
@@ -752,6 +853,7 @@ const RealEstateSearch = () => {
                           <option value="戸建て">戸建て</option>
                           <option value="店舗">店舗</option>
                           <option value="事務所">事務所</option>
+                          <option value="その他">その他</option>
                         </select>
                       </div>
                       <div>
@@ -832,7 +934,7 @@ const RealEstateSearch = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">保守管理費 (円)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">管理委託費 (円)</label>
                         <input
                             type="number"
                             value={editingProperty.incomeAndExpenses?.maintenanceCost || ''}
