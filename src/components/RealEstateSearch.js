@@ -452,6 +452,11 @@ const RealEstateSearch = () => {
                             <h3 className="text-lg font-semibold text-gray-800">
                               {property.project?.projectName || '名称未設定'}
                             </h3>
+                            {((property.incomeAndExpenses?.principal || 0) > 0 || (property.incomeAndExpenses?.interest || 0) > 0) && (
+                                <span className="ml-2 px-2 py-1 bg-orange-100 text-orange-800 text-xs font-semibold rounded">
+                                融資有り
+                              </span>
+                            )}
                           </div>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 text-sm text-gray-600">
@@ -520,7 +525,7 @@ const RealEstateSearch = () => {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div className="bg-blue-50 p-3 rounded">
                           <div className="font-medium text-blue-800">取得価格</div>
                           <div className="text-blue-600">{formatPrice((property.parcel?.parcelPrice || 0) + (property.building?.buildingPrice || 0))}</div>
@@ -543,6 +548,15 @@ const RealEstateSearch = () => {
                                 (property.incomeAndExpenses?.electricBill || 0) +
                                 (property.incomeAndExpenses?.gasBill || 0) +
                                 (property.incomeAndExpenses?.fireInsurance || 0)
+                            )}
+                          </div>
+                        </div>
+                        <div className="bg-orange-50 p-3 rounded">
+                          <div className="font-medium text-orange-800">返済</div>
+                          <div className="text-orange-600">
+                            {formatPrice(
+                                (property.incomeAndExpenses?.principal || 0) +
+                                (property.incomeAndExpenses?.interest || 0)
                             )}
                           </div>
                         </div>
