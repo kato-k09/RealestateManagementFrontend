@@ -6,11 +6,10 @@ const RealEstateSearch = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchParams, setSearchParams] = useState({
-    projectName: '',
-    buildingType: '',
-    parcelCategory: '',
-    minPrice: '',
-    maxPrice: ''
+    searchProjectName: '',
+    searchParcelAddress: '',
+    searchBuildingType: '',
+    searchBuildingStructure: ''
   });
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -72,11 +71,10 @@ const RealEstateSearch = () => {
   // 検索リセット
   const handleReset = () => {
     setSearchParams({
-      projectName: '',
-      buildingType: '',
-      parcelCategory: '',
-      minPrice: '',
-      maxPrice: ''
+      searchProjectName: '',
+      searchParcelAddress: '',
+      searchBuildingType: '',
+      searchBuildingStructure: ''
     });
     fetchRealEstateList();
   };
@@ -337,15 +335,15 @@ const RealEstateSearch = () => {
             検索条件
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 プロジェクト名
               </label>
               <input
                   type="text"
-                  value={searchParams.projectName}
-                  onChange={(e) => setSearchParams({...searchParams, projectName: e.target.value})}
+                  value={searchParams.searchProjectName}
+                  onChange={(e) => setSearchParams({...searchParams, searchProjectName: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="プロジェクト名"
               />
@@ -353,11 +351,24 @@ const RealEstateSearch = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                建物種別
+                住所
+              </label>
+              <input
+                  type="text"
+                  value={searchParams.searchParcelAddress}
+                  onChange={(e) => setSearchParams({...searchParams, searchParcelAddress: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="住所を入力"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                種別
               </label>
               <select
-                  value={searchParams.buildingType}
-                  onChange={(e) => setSearchParams({...searchParams, buildingType: e.target.value})}
+                  value={searchParams.searchBuildingType}
+                  onChange={(e) => setSearchParams({...searchParams, searchBuildingType: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">すべて</option>
@@ -372,41 +383,20 @@ const RealEstateSearch = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                地目
+                構造
               </label>
-              <input
-                  type="text"
-                  value={searchParams.parcelCategory}
-                  onChange={(e) => setSearchParams({...searchParams, parcelCategory: e.target.value})}
+              <select
+                  value={searchParams.searchBuildingStructure}
+                  onChange={(e) => setSearchParams({...searchParams, searchBuildingStructure: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="地目を入力"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                最低価格
-              </label>
-              <input
-                  type="number"
-                  value={searchParams.minPrice}
-                  onChange={(e) => setSearchParams({...searchParams, minPrice: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="最低価格"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                最高価格
-              </label>
-              <input
-                  type="number"
-                  value={searchParams.maxPrice}
-                  onChange={(e) => setSearchParams({...searchParams, maxPrice: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="最高価格"
-              />
+              >
+                <option value="">すべて</option>
+                <option value="鉄筋コンクリート造">鉄筋コンクリート造</option>
+                <option value="鉄骨造">鉄骨造</option>
+                <option value="木造">木造</option>
+                <option value="軽量鉄骨造">軽量鉄骨造</option>
+                <option value="その他">その他</option>
+              </select>
             </div>
           </div>
 
