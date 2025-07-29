@@ -17,6 +17,7 @@ const RealEstateSearch = () => {
   const [editingProperty, setEditingProperty] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletingProperty, setDeletingProperty] = useState(null);
+  const [excludeLoan, setExcludeLoan] = useState(false);
 
   // コンポーネント読み込み時に全データを取得
   useEffect(() => {
@@ -210,16 +211,19 @@ const RealEstateSearch = () => {
     if (!incomeAndExpenses) return 0;
 
     const income = incomeAndExpenses.rent || 0;
-    const expenses = (incomeAndExpenses.managementFee || 0) +
+    let expenses = (incomeAndExpenses.managementFee || 0) +
         (incomeAndExpenses.repairFund || 0) +
         (incomeAndExpenses.maintenanceCost || 0) +
-        (incomeAndExpenses.principal || 0) +
-        (incomeAndExpenses.interest || 0) +
         (incomeAndExpenses.tax || 0) +
         (incomeAndExpenses.waterBill || 0) +
         (incomeAndExpenses.electricBill || 0) +
         (incomeAndExpenses.gasBill || 0) +
         (incomeAndExpenses.fireInsurance || 0);
+
+    // 融資を考慮する場合のみ元金と利息を追加
+    if (!excludeLoan) {
+      expenses += (incomeAndExpenses.principal || 0) + (incomeAndExpenses.interest || 0);
+    }
 
     return income - expenses;
   };
@@ -241,16 +245,20 @@ const RealEstateSearch = () => {
     if (!property || !property.incomeAndExpenses || !property.incomeAndExpenses.rent) return 0;
 
     const annualRent = property.incomeAndExpenses.rent * 12;
-    const annualExpenses = ((property.incomeAndExpenses.managementFee || 0) +
+    let annualExpenses = ((property.incomeAndExpenses.managementFee || 0) +
         (property.incomeAndExpenses.repairFund || 0) +
         (property.incomeAndExpenses.maintenanceCost || 0) +
-        (property.incomeAndExpenses.principal || 0) +
-        (property.incomeAndExpenses.interest || 0) +
         (property.incomeAndExpenses.tax || 0) +
         (property.incomeAndExpenses.waterBill || 0) +
         (property.incomeAndExpenses.electricBill || 0) +
         (property.incomeAndExpenses.gasBill || 0) +
         (property.incomeAndExpenses.fireInsurance || 0)) * 12;
+
+    // 融資を考慮する場合のみ元金と利息を追加
+    if (!excludeLoan) {
+      annualExpenses += ((property.incomeAndExpenses.principal || 0) +
+          (property.incomeAndExpenses.interest || 0)) * 12;
+    }
 
     const totalPrice = (property.parcel?.parcelPrice || 0) + (property.building?.buildingPrice || 0);
 
@@ -289,16 +297,20 @@ const RealEstateSearch = () => {
       totals.rent += property.incomeAndExpenses?.rent || 0;
 
       // 支出の合計
-      const propertyExpenses = (property.incomeAndExpenses?.managementFee || 0) +
+      let propertyExpenses = (property.incomeAndExpenses?.managementFee || 0) +
           (property.incomeAndExpenses?.repairFund || 0) +
           (property.incomeAndExpenses?.maintenanceCost || 0) +
-          (property.incomeAndExpenses?.principal || 0) +
-          (property.incomeAndExpenses?.interest || 0) +
           (property.incomeAndExpenses?.tax || 0) +
           (property.incomeAndExpenses?.waterBill || 0) +
           (property.incomeAndExpenses?.electricBill || 0) +
           (property.incomeAndExpenses?.gasBill || 0) +
           (property.incomeAndExpenses?.fireInsurance || 0);
+
+      // 融資を考慮する場合のみ元金と利息を追加
+      if (!excludeLoan) {
+        propertyExpenses += (property.incomeAndExpenses?.principal || 0) +
+            (property.incomeAndExpenses?.interest || 0);
+      }
 
       totals.expenses += propertyExpenses;
 
@@ -427,9 +439,23 @@ const RealEstateSearch = () => {
         {/* 物件一覧 */}
         <div className="bg-white rounded-lg shadow-md">
           <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-700">
-              検索結果: {realEstateList.length}件
-            </h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-700">
+                検索結果: {realEstateList.length}件
+              </h2>
+              <div className="flex items-center">
+                <input
+                    type="checkbox"
+                    id="excludeLoan"
+                    checked={excludeLoan}
+                    onChange={(e) => setExcludeLoan(e.target.checked)}
+                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="excludeLoan" className="text-sm text-gray-700">
+                  融資を考慮しない
+                </label>
+              </div>
+            </div>
           </div>
 
           {loading ? (
@@ -541,8 +567,8 @@ const RealEstateSearch = () => {
                                 (property.incomeAndExpenses?.managementFee || 0) +
                                 (property.incomeAndExpenses?.repairFund || 0) +
                                 (property.incomeAndExpenses?.maintenanceCost || 0) +
-                                (property.incomeAndExpenses?.principal || 0) +
-                                (property.incomeAndExpenses?.interest || 0) +
+                                (!excludeLoan ? ((property.incomeAndExpenses?.principal || 0) +
+                                    (property.incomeAndExpenses?.interest || 0)) : 0) +
                                 (property.incomeAndExpenses?.tax || 0) +
                                 (property.incomeAndExpenses?.waterBill || 0) +
                                 (property.incomeAndExpenses?.electricBill || 0) +
