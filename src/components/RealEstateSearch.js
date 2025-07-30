@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Eye, Edit, Trash2, Home, MapPin, Calendar, DollarSign, X, Save } from 'lucide-react';
+import { Search, Eye, Edit, Trash2, Building2, MapPin, Calendar, DollarSign, X, Save } from 'lucide-react';
 
 const RealEstateSearch = () => {
   const [realEstateList, setRealEstateList] = useState([]);
@@ -9,7 +9,8 @@ const RealEstateSearch = () => {
     searchProjectName: '',
     searchParcelAddress: '',
     searchBuildingType: '',
-    searchBuildingStructure: ''
+    searchBuildingStructure: '',
+    searchFinancing: null
   });
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -34,7 +35,7 @@ const RealEstateSearch = () => {
 
       // 検索パラメータがある場合はクエリパラメータに追加
       Object.keys(params).forEach(key => {
-        if (params[key] && params[key].toString().trim() !== '') {
+        if (params[key] !== null && params[key] !== undefined && params[key].toString().trim() !== '') {
           queryParams.append(key, params[key]);
         }
       });
@@ -75,7 +76,8 @@ const RealEstateSearch = () => {
       searchProjectName: '',
       searchParcelAddress: '',
       searchBuildingType: '',
-      searchBuildingStructure: ''
+      searchBuildingStructure: '',
+      searchFinancing: null
     });
     fetchRealEstateList();
   };
@@ -336,8 +338,9 @@ const RealEstateSearch = () => {
 
   return (
       <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
-        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-          不動産物件検索・一覧
+        <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 flex items-center justify-center">
+          <Building2 className="mr-3 text-blue-600" size={36} />
+          不動産一覧・検索
         </h1>
 
         {/* 検索フォーム */}
@@ -347,7 +350,7 @@ const RealEstateSearch = () => {
             検索条件
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 プロジェクト名
@@ -410,6 +413,27 @@ const RealEstateSearch = () => {
                 <option value="その他">その他</option>
               </select>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                融資
+              </label>
+              <select
+                  value={searchParams.searchFinancing === null ? '' : searchParams.searchFinancing.toString()}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchParams({
+                      ...searchParams,
+                      searchFinancing: value === '' ? null : value === 'true'
+                    });
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">すべて</option>
+                <option value="true">融資有り</option>
+                <option value="false">融資無し</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex gap-4">
@@ -436,7 +460,7 @@ const RealEstateSearch = () => {
             </div>
         )}
 
-        {/* 物件一覧 */}
+        {/* 不動産一覧・検索 */}
         <div className="bg-white rounded-lg shadow-md">
           <div className="p-6 border-b border-gray-200">
             <div className="flex justify-between items-center">
@@ -474,7 +498,7 @@ const RealEstateSearch = () => {
                       <div className="flex justify-between items-start mb-4">
                         <div className="flex-1">
                           <div className="flex items-center mb-2">
-                            <Home className="mr-2 text-blue-600" size={20} />
+                            <Building2 className="mr-2 text-blue-600" size={20} />
                             <h3 className="text-lg font-semibold text-gray-800">
                               {property.project?.projectName || '名称未設定'}
                             </h3>
@@ -492,7 +516,7 @@ const RealEstateSearch = () => {
                             </div>
 
                             <div className="flex items-center">
-                              <Home className="mr-1" size={16} />
+                              <Building2 className="mr-1" size={16} />
                               <span>{property.building?.buildingType || property.parcel?.parcelCategory || '種別未設定'}</span>
                             </div>
 

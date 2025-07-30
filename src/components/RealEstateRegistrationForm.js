@@ -126,7 +126,7 @@ const RealEstateRegistrationForm = () => {
   return (
       <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-          不動産投資管理 登録フォーム
+          不動産登録フォーム
         </h1>
 
         <div className="space-y-8">
