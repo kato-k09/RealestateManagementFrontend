@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Eye, Edit, Trash2, Building2, MapPin, Calendar, DollarSign, X, Save } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const RealEstateSearch = () => {
+  const { authenticatedFetch } = useAuth(); // 認証機能のみ追加
   const [realEstateList, setRealEstateList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -44,11 +46,9 @@ const RealEstateSearch = () => {
           ? `/searchRealestate?${queryParams.toString()}`
           : '/searchRealestate';
 
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      // 認証対応のfetchに変更
+      const response = await authenticatedFetch(url, {
+        method: 'GET'
       });
 
       if (response.ok) {
@@ -134,11 +134,9 @@ const RealEstateSearch = () => {
   // 編集内容を保存
   const handleSaveEdit = async () => {
     try {
-      const response = await fetch('/updateRealestate', {
+      // 認証対応のfetchに変更
+      const response = await authenticatedFetch('/updateRealestate', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(editingProperty)
       });
 
@@ -169,11 +167,9 @@ const RealEstateSearch = () => {
       // プロジェクトIDまたは他の一意の識別子を使用
       const projectId = deletingProperty.project?.id || deletingProperty.id;
 
-      const response = await fetch(`/deleteRealestate/${projectId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      // 認証対応のfetchに変更
+      const response = await authenticatedFetch(`/deleteRealestate/${projectId}`, {
+        method: 'DELETE'
       });
 
       if (response.ok) {

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const RealEstateRegistrationForm = () => {
+  const { authenticatedFetch } = useAuth(); // 認証付きfetch関数を取得
+
   // 各DTOに対応したstate
   const [projectData, setProjectData] = useState({
     projectName: '',
@@ -45,7 +48,7 @@ const RealEstateRegistrationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  // フォーム送信処理
+  // フォーム送信処理（認証対応）
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setSubmitMessage('');
@@ -82,24 +85,59 @@ const RealEstateRegistrationForm = () => {
         }
       };
 
-      const response = await fetch('/registerRealestate', {
+      // 認証付きfetchを使用
+      const response = await authenticatedFetch('/registerRealestate', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(formattedData)
       });
 
       if (response.ok) {
         setSubmitMessage('不動産情報が正常に登録されました。');
+
         // フォームをリセット
-        resetForm();
+        setProjectData({ projectName: '', isDeleted: false });
+        setParcelData({
+          parcelPrice: '',
+          parcelAddress: '',
+          parcelCategory: '',
+          parcelSize: '',
+          parcelRemark: '',
+          isDeleted: false
+        });
+        setBuildingData({
+          buildingPrice: '',
+          buildingType: '',
+          buildingStructure: '',
+          buildingSize: '',
+          buildingDate: '',
+          buildingRemark: '',
+          isDeleted: false
+        });
+        setIncomeExpensesData({
+          rent: '',
+          maintenanceCost: '',
+          repairFund: '',
+          managementFee: '',
+          principal: '',
+          interest: '',
+          tax: '',
+          waterBill: '',
+          electricBill: '',
+          gasBill: '',
+          fireInsurance: '',
+          other: '',
+          isDeleted: false
+        });
       } else {
-        setSubmitMessage('エラーが発生しました。もう一度お試しください。');
+        setSubmitMessage('登録に失敗しました。再試行してください。');
       }
     } catch (error) {
-      setSubmitMessage('通信エラーが発生しました。');
       console.error('Error:', error);
+      if (error.message.includes('認証')) {
+        setSubmitMessage('ログインが必要です。');
+      } else {
+        setSubmitMessage('通信エラーが発生しました。');
+      }
     } finally {
       setIsSubmitting(false);
     }
