@@ -67,6 +67,13 @@ const Header = ({ currentView, setCurrentView }) => {
                       <div className="text-gray-500">{user?.email}</div>
                     </div>
                     <button
+                        onClick={() => setCurrentView('profile')}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      プロフィール編集
+                    </button>
+                    <button
                         onClick={handleLogout}
                         className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >

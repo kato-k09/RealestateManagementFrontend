@@ -6,6 +6,7 @@ import Register from './components/Register';
 import Header from './components/Header';
 import RealEstateRegistrationForm from './components/RealEstateRegistrationForm';
 import RealEstateSearch from './components/RealEstateSearch';
+import UserProfile from './components/UserProfile';
 
 // メインアプリケーションコンポーネント（認証後）
 const MainApp = () => {
@@ -18,8 +19,12 @@ const MainApp = () => {
         <main className="py-6">
           {currentView === 'search' ? (
               <RealEstateSearch />
-          ) : (
+          ) : currentView === 'register' ? (
               <RealEstateRegistrationForm />
+          ) : currentView === 'profile' ? (
+              <UserProfile />
+          ) : (
+              <RealEstateSearch />
           )}
         </main>
       </div>
