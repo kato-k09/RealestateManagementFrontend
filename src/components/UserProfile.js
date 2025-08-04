@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Eye, EyeOff, Save, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react';
+import { User, Mail, Eye, EyeOff, Save, RefreshCw, AlertCircle, CheckCircle, Trash2, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const UserProfile = () => {
-  const { user, authenticatedFetch } = useAuth();
+  const { user, authenticatedFetch, logout } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', content: '' });
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [formData, setFormData] = useState({
     username: '',
@@ -128,7 +130,7 @@ const UserProfile = () => {
         updateData.newPassword = formData.newPassword;
       }
 
-      const response = await authenticatedFetch('/changeUserInfo', {
+      const response = await authenticatedFetch('/api/auth/changeUserInfo', {
         method: 'PUT',
         body: JSON.stringify(updateData)
       });
@@ -147,9 +149,6 @@ const UserProfile = () => {
           confirmPassword: ''
         }));
 
-        // 必要に応じてユーザー情報を再取得
-        // await refreshUserInfo();
-
       } else {
         const errorData = await response.json();
         setMessage({
@@ -165,6 +164,37 @@ const UserProfile = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ユーザー削除処理
+  const handleDeleteUser = async () => {
+    setDeleteLoading(true);
+    try {
+      const response = await authenticatedFetch('/api/auth/deleteUser', {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        // 削除成功後、ログアウトしてログイン画面に遷移
+        await logout();
+        alert('ユーザーアカウントが削除されました。');
+      } else {
+        const errorData = await response.json();
+        setMessage({
+          type: 'error',
+          content: errorData.message || 'ユーザー削除に失敗しました'
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      setMessage({
+        type: 'error',
+        content: '通信エラーが発生しました'
+      });
+    } finally {
+      setDeleteLoading(false);
+      setShowDeleteModal(false);
     }
   };
 
@@ -239,14 +269,13 @@ const UserProfile = () => {
                       value={formData.username}
                       onChange={handleInputChange}
                       className={`block w-full pl-10 pr-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          errors.username ? 'border-red-300' : 'border-gray-300'
+                          errors.username ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="ユーザー名を入力"
-                      disabled={loading}
                   />
                 </div>
                 {errors.username && (
-                    <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+                    <p className="mt-2 text-sm text-red-600">{errors.username}</p>
                 )}
               </div>
 
@@ -265,14 +294,13 @@ const UserProfile = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       className={`block w-full pl-10 pr-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          errors.email ? 'border-red-300' : 'border-gray-300'
+                          errors.email ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="メールアドレスを入力"
-                      disabled={loading}
                   />
                 </div>
                 {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                    <p className="mt-2 text-sm text-red-600">{errors.email}</p>
                 )}
               </div>
 
@@ -281,24 +309,18 @@ const UserProfile = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   表示名 *
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                      type="text"
-                      name="displayName"
-                      value={formData.displayName}
-                      onChange={handleInputChange}
-                      className={`block w-full pl-10 pr-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          errors.displayName ? 'border-red-300' : 'border-gray-300'
-                      }`}
-                      placeholder="表示名を入力"
-                      disabled={loading}
-                  />
-                </div>
+                <input
+                    type="text"
+                    name="displayName"
+                    value={formData.displayName}
+                    onChange={handleInputChange}
+                    className={`block w-full px-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                        errors.displayName ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="表示名を入力"
+                />
                 {errors.displayName && (
-                    <p className="mt-1 text-sm text-red-600">{errors.displayName}</p>
+                    <p className="mt-2 text-sm text-red-600">{errors.displayName}</p>
                 )}
               </div>
             </div>
@@ -306,11 +328,8 @@ const UserProfile = () => {
             {/* パスワード変更セクション */}
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">
-                パスワード変更（任意）
+                パスワード変更（変更する場合のみ入力）
               </h2>
-              <p className="text-sm text-gray-600">
-                パスワードを変更しない場合は空欄のままにしてください
-              </p>
 
               {/* 現在のパスワード */}
               <div>
@@ -319,31 +338,29 @@ const UserProfile = () => {
                 </label>
                 <div className="relative">
                   <input
-                      type={showCurrentPassword ? 'text' : 'password'}
+                      type={showCurrentPassword ? "text" : "password"}
                       name="currentPassword"
                       value={formData.currentPassword}
                       onChange={handleInputChange}
-                      className={`block w-full pr-12 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          errors.currentPassword ? 'border-red-300' : 'border-gray-300'
+                      className={`block w-full pr-10 px-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                          errors.currentPassword ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="現在のパスワードを入力"
-                      disabled={loading}
                   />
                   <button
                       type="button"
                       className="absolute inset-y-0 right-0 pr-3 flex items-center"
                       onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                      disabled={loading}
                   >
                     {showCurrentPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <EyeOff className="h-5 w-5 text-gray-400" />
                     ) : (
-                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <Eye className="h-5 w-5 text-gray-400" />
                     )}
                   </button>
                 </div>
                 {errors.currentPassword && (
-                    <p className="mt-1 text-sm text-red-600">{errors.currentPassword}</p>
+                    <p className="mt-2 text-sm text-red-600">{errors.currentPassword}</p>
                 )}
               </div>
 
@@ -354,101 +371,166 @@ const UserProfile = () => {
                 </label>
                 <div className="relative">
                   <input
-                      type={showNewPassword ? 'text' : 'password'}
+                      type={showNewPassword ? "text" : "password"}
                       name="newPassword"
                       value={formData.newPassword}
                       onChange={handleInputChange}
-                      className={`block w-full pr-12 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          errors.newPassword ? 'border-red-300' : 'border-gray-300'
+                      className={`block w-full pr-10 px-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                          errors.newPassword ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="新しいパスワードを入力（6文字以上）"
-                      disabled={loading}
                   />
                   <button
                       type="button"
                       className="absolute inset-y-0 right-0 pr-3 flex items-center"
                       onClick={() => setShowNewPassword(!showNewPassword)}
-                      disabled={loading}
                   >
                     {showNewPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <EyeOff className="h-5 w-5 text-gray-400" />
                     ) : (
-                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <Eye className="h-5 w-5 text-gray-400" />
                     )}
                   </button>
                 </div>
                 {errors.newPassword && (
-                    <p className="mt-1 text-sm text-red-600">{errors.newPassword}</p>
+                    <p className="mt-2 text-sm text-red-600">{errors.newPassword}</p>
                 )}
               </div>
 
               {/* パスワード確認 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  新しいパスワード確認
+                  新しいパスワード（確認）
                 </label>
                 <div className="relative">
                   <input
-                      type={showConfirmPassword ? 'text' : 'password'}
+                      type={showConfirmPassword ? "text" : "password"}
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
-                      className={`block w-full pr-12 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                      className={`block w-full pr-10 px-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                          errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="新しいパスワードを再入力"
-                      disabled={loading}
                   />
                   <button
                       type="button"
                       className="absolute inset-y-0 right-0 pr-3 flex items-center"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      disabled={loading}
                   >
                     {showConfirmPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <EyeOff className="h-5 w-5 text-gray-400" />
                     ) : (
-                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                        <Eye className="h-5 w-5 text-gray-400" />
                     )}
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                    <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+                    <p className="mt-2 text-sm text-red-600">{errors.confirmPassword}</p>
                 )}
               </div>
             </div>
 
-            {/* ボタン */}
-            <div className="flex justify-end space-x-4 pt-6 border-t">
-              <button
-                  type="button"
-                  onClick={handleReset}
-                  disabled={loading}
-                  className="px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed flex items-center"
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                リセット
-              </button>
-              <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center"
-              >
-                {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      更新中...
-                    </>
-                ) : (
-                    <>
-                      <Save className="w-4 h-4 mr-2" />
-                      更新
-                    </>
-                )}
-              </button>
+            {/* ボタン群 */}
+            <div className="flex flex-col space-y-4 pt-4 border-t border-gray-200">
+              {/* 更新・リセットボタン */}
+              <div className="flex space-x-4">
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {loading ? (
+                      <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                  ) : (
+                      <Save className="w-5 h-5 mr-2" />
+                  )}
+                  {loading ? '更新中...' : '更新'}
+                </button>
+
+                <button
+                    type="button"
+                    onClick={handleReset}
+                    disabled={loading}
+                    className="px-6 py-3 bg-gray-500 text-white font-medium rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  リセット
+                </button>
+              </div>
+
+              {/* ユーザー削除ボタン */}
+              <div className="pt-4 border-t border-gray-200">
+                <button
+                    type="button"
+                    onClick={() => setShowDeleteModal(true)}
+                    disabled={loading || deleteLoading}
+                    className="w-full flex items-center justify-center px-6 py-3 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <Trash2 className="w-5 h-5 mr-2" />
+                  ユーザーを削除
+                </button>
+                <p className="mt-2 text-sm text-gray-500">
+                  ※ ユーザーを削除すると、すべてのデータが完全に削除され、復元できません。
+                </p>
+              </div>
             </div>
           </form>
         </div>
+
+        {/* 削除確認モーダル */}
+        {showDeleteModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                <div className="flex items-center mb-4">
+                  <AlertCircle className="w-8 h-8 text-red-600 mr-3" />
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    ユーザー削除の確認
+                  </h3>
+                </div>
+
+                <div className="mb-6">
+                  <p className="text-gray-700 mb-4">
+                    本当にユーザーアカウントを削除しますか？
+                  </p>
+                  <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                    <p className="text-red-800 text-sm">
+                      <strong>⚠️ 注意：</strong>
+                    </p>
+                    <ul className="text-red-700 text-sm mt-2 list-disc list-inside space-y-1">
+                      <li>すべてのユーザーデータが完全に削除されます</li>
+                      <li>登録した不動産情報もすべて削除されます</li>
+                      <li>この操作は取り消すことができません</li>
+                      <li>削除後は同じアカウントでログインできません</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="flex space-x-4">
+                  <button
+                      onClick={handleDeleteUser}
+                      disabled={deleteLoading}
+                      className="flex-1 flex items-center justify-center px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {deleteLoading ? (
+                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                        <Trash2 className="w-4 h-4 mr-2" />
+                    )}
+                    {deleteLoading ? '削除中...' : '削除する'}
+                  </button>
+
+                  <button
+                      onClick={() => setShowDeleteModal(false)}
+                      disabled={deleteLoading}
+                      className="flex-1 flex items-center justify-center px-4 py-2 bg-gray-500 text-white font-medium rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <X className="w-4 h-4 mr-2" />
+                    キャンセル
+                  </button>
+                </div>
+              </div>
+            </div>
+        )}
       </div>
   );
 };
