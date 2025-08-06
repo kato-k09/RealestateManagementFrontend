@@ -32,6 +32,7 @@ const RealEstateSearch = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletingProperty, setDeletingProperty] = useState(null);
   const [excludeLoan, setExcludeLoan] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState('');
 
   // 物件一覧を取得する関数
   const fetchRealEstateList = useCallback(async (params = {}) => {
@@ -159,13 +160,29 @@ const RealEstateSearch = () => {
       if (response.ok) {
         setShowEditModal(false);
         fetchRealEstateList(); // リストを再取得
-        alert('更新が完了しました。');
+        setUpdateMessage('更新が完了しました。');
+        // 3秒後にメッセージを消去
+        setTimeout(() => setUpdateMessage(''), 3000);
       } else {
-        alert('更新に失敗しました。');
+        try {
+          const errorData = await response.json();
+          const errorMessage = errorData.message || '更新に失敗しました。';
+          setUpdateMessage(errorMessage);
+          setTimeout(() => setUpdateMessage(''), 5000);
+        } catch (parseError) {
+          console.error('Error parsing response:', parseError);
+          setUpdateMessage('更新に失敗しました。');
+          setTimeout(() => setUpdateMessage(''), 5000);
+        }
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('通信エラーが発生しました。');
+      if (error.message.includes('認証')) {
+        setUpdateMessage('ログインが必要です。');
+      } else {
+        setUpdateMessage('通信エラーが発生しました。');
+      }
+      setTimeout(() => setUpdateMessage(''), 5000);
     }
   };
 
@@ -195,13 +212,35 @@ const RealEstateSearch = () => {
         setShowDeleteConfirm(false);
         setDeletingProperty(null);
         fetchRealEstateList(); // リストを再取得
-        alert('削除が完了しました。');
+        setUpdateMessage('削除が完了しました。');
+        setTimeout(() => setUpdateMessage(''), 3000);
       } else {
-        alert('削除に失敗しました。');
+        try {
+          const errorData = await response.json();
+          const errorMessage = errorData.message || '削除に失敗しました。';
+          setShowDeleteConfirm(false);
+          setDeletingProperty(null);
+          setUpdateMessage(errorMessage);
+          setTimeout(() => setUpdateMessage(''), 5000);
+        } catch (parseError) {
+          console.error('Error parsing response:', parseError);
+          setShowDeleteConfirm(false);
+          setDeletingProperty(null);
+          setUpdateMessage('削除に失敗しました。');
+          setTimeout(() => setUpdateMessage(''), 5000);
+        }
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('通信エラーが発生しました。');
+      setShowDeleteConfirm(false);
+      setDeletingProperty(null);
+
+      if (error.message.includes('認証')) {
+        setUpdateMessage('ログインが必要です。');
+      } else {
+        setUpdateMessage('通信エラーが発生しました。');
+      }
+      setTimeout(() => setUpdateMessage(''), 5000);
     }
   };
 
@@ -384,6 +423,18 @@ const RealEstateSearch = () => {
 
   return (
       <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
+
+        {updateMessage && (
+            <div
+                className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-[9999] ${
+                    updateMessage.includes('完了')
+                        ? 'bg-green-100 text-green-800 border border-green-200'
+                        : 'bg-red-100 text-red-800 border border-red-200'
+                }`}>
+              {updateMessage}
+            </div>
+        )}
+
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 flex items-center justify-center">
           <Building2 className="mr-3 text-blue-600" size={36}/>
           不動産一覧・検索

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import React, {useState} from 'react';
+import {useAuth} from '../context/AuthContext';
 
 const RealEstateRegistrationForm = () => {
-  const { authenticatedFetch } = useAuth(); // 認証付きfetch関数を取得
+  const {authenticatedFetch} = useAuth(); // 認証付きfetch関数を取得
 
   // 各DTOに対応したstate
   const [projectData, setProjectData] = useState({
@@ -93,43 +93,16 @@ const RealEstateRegistrationForm = () => {
 
       if (response.ok) {
         setSubmitMessage('不動産情報が正常に登録されました。');
-
-        // フォームをリセット
-        setProjectData({ projectName: '', isDeleted: false });
-        setParcelData({
-          parcelPrice: '',
-          parcelAddress: '',
-          parcelCategory: '',
-          parcelSize: '',
-          parcelRemark: '',
-          isDeleted: false
-        });
-        setBuildingData({
-          buildingPrice: '',
-          buildingType: '',
-          buildingStructure: '',
-          buildingSize: '',
-          buildingDate: '',
-          buildingRemark: '',
-          isDeleted: false
-        });
-        setIncomeExpensesData({
-          rent: '',
-          maintenanceCost: '',
-          repairFund: '',
-          managementFee: '',
-          principal: '',
-          interest: '',
-          tax: '',
-          waterBill: '',
-          electricBill: '',
-          gasBill: '',
-          fireInsurance: '',
-          other: '',
-          isDeleted: false
-        });
+        resetForm();
       } else {
-        setSubmitMessage('登録に失敗しました。再試行してください。');
+        try {
+          const errorData = await response.json();
+          const errorMessage = errorData.message
+              || '登録に失敗しました。再試行してください。';
+          setSubmitMessage(errorMessage);
+        } catch (parseError) {
+          setSubmitMessage('登録に失敗しました。再試行してください。');
+        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -144,7 +117,7 @@ const RealEstateRegistrationForm = () => {
   };
 
   const resetForm = () => {
-    setProjectData({ projectName: '', isDeleted: false });
+    setProjectData({projectName: '', isDeleted: false});
     setParcelData({
       parcelPrice: '', parcelAddress: '', parcelCategory: '',
       parcelSize: '', parcelRemark: '', isDeleted: false
@@ -155,9 +128,19 @@ const RealEstateRegistrationForm = () => {
       buildingDate: '', buildingRemark: '', isDeleted: false
     });
     setIncomeExpensesData({
-      rent: '', maintenanceCost: '', repairFund: '', managementFee: '',
-      principal: '', interest: '', tax: '', waterBill: '',
-      electricBill: '', gasBill: '', fireInsurance: '', other: '', isDeleted: false
+      rent: '',
+      maintenanceCost: '',
+      repairFund: '',
+      managementFee: '',
+      principal: '',
+      interest: '',
+      tax: '',
+      waterBill: '',
+      electricBill: '',
+      gasBill: '',
+      fireInsurance: '',
+      other: '',
+      isDeleted: false
     });
   };
 
@@ -180,7 +163,8 @@ const RealEstateRegistrationForm = () => {
                     type="text"
                     required
                     value={projectData.projectName}
-                    onChange={(e) => setProjectData({...projectData, projectName: e.target.value})}
+                    onChange={(e) => setProjectData(
+                        {...projectData, projectName: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="プロジェクト名を入力してください"
                 />
@@ -199,7 +183,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={parcelData.parcelPrice}
-                    onChange={(e) => setParcelData({...parcelData, parcelPrice: e.target.value})}
+                    onChange={(e) => setParcelData(
+                        {...parcelData, parcelPrice: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="0"
                 />
@@ -211,7 +196,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="text"
                     value={parcelData.parcelAddress}
-                    onChange={(e) => setParcelData({...parcelData, parcelAddress: e.target.value})}
+                    onChange={(e) => setParcelData(
+                        {...parcelData, parcelAddress: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="土地住所を入力してください"
                 />
@@ -223,7 +209,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="text"
                     value={parcelData.parcelCategory}
-                    onChange={(e) => setParcelData({...parcelData, parcelCategory: e.target.value})}
+                    onChange={(e) => setParcelData(
+                        {...parcelData, parcelCategory: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="地目を入力してください（例：宅地、田、畑、山林など）"
                 />
@@ -236,7 +223,8 @@ const RealEstateRegistrationForm = () => {
                     type="number"
                     step="0.01"
                     value={parcelData.parcelSize}
-                    onChange={(e) => setParcelData({...parcelData, parcelSize: e.target.value})}
+                    onChange={(e) => setParcelData(
+                        {...parcelData, parcelSize: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="0.00"
                 />
@@ -247,7 +235,8 @@ const RealEstateRegistrationForm = () => {
                 </label>
                 <textarea
                     value={parcelData.parcelRemark}
-                    onChange={(e) => setParcelData({...parcelData, parcelRemark: e.target.value})}
+                    onChange={(e) => setParcelData(
+                        {...parcelData, parcelRemark: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     rows="3"
                     placeholder="土地に関する備考を入力してください"
@@ -267,7 +256,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={buildingData.buildingPrice}
-                    onChange={(e) => setBuildingData({...buildingData, buildingPrice: e.target.value})}
+                    onChange={(e) => setBuildingData(
+                        {...buildingData, buildingPrice: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     placeholder="0"
                 />
@@ -278,7 +268,8 @@ const RealEstateRegistrationForm = () => {
                 </label>
                 <select
                     value={buildingData.buildingType}
-                    onChange={(e) => setBuildingData({...buildingData, buildingType: e.target.value})}
+                    onChange={(e) => setBuildingData(
+                        {...buildingData, buildingType: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 >
                   <option value="">選択してください</option>
@@ -296,7 +287,8 @@ const RealEstateRegistrationForm = () => {
                 </label>
                 <select
                     value={buildingData.buildingStructure}
-                    onChange={(e) => setBuildingData({...buildingData, buildingStructure: e.target.value})}
+                    onChange={(e) => setBuildingData(
+                        {...buildingData, buildingStructure: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 >
                   <option value="">選択してください</option>
@@ -315,7 +307,8 @@ const RealEstateRegistrationForm = () => {
                     type="number"
                     step="0.01"
                     value={buildingData.buildingSize}
-                    onChange={(e) => setBuildingData({...buildingData, buildingSize: e.target.value})}
+                    onChange={(e) => setBuildingData(
+                        {...buildingData, buildingSize: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     placeholder="0.00"
                 />
@@ -327,7 +320,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="date"
                     value={buildingData.buildingDate}
-                    onChange={(e) => setBuildingData({...buildingData, buildingDate: e.target.value})}
+                    onChange={(e) => setBuildingData(
+                        {...buildingData, buildingDate: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                 />
               </div>
@@ -337,7 +331,8 @@ const RealEstateRegistrationForm = () => {
                 </label>
                 <textarea
                     value={buildingData.buildingRemark}
-                    onChange={(e) => setBuildingData({...buildingData, buildingRemark: e.target.value})}
+                    onChange={(e) => setBuildingData(
+                        {...buildingData, buildingRemark: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     rows="3"
                     placeholder="建物に関する備考を入力してください"
@@ -357,7 +352,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.rent}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, rent: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, rent: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -369,7 +365,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.managementFee}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, managementFee: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, managementFee: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -381,7 +378,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.repairFund}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, repairFund: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, repairFund: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -393,7 +391,10 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.maintenanceCost}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, maintenanceCost: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData({
+                      ...incomeExpensesData,
+                      maintenanceCost: e.target.value
+                    })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -405,7 +406,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.principal}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, principal: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, principal: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -417,7 +419,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.interest}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, interest: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, interest: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -429,7 +432,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.tax}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, tax: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, tax: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -441,7 +445,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.waterBill}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, waterBill: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, waterBill: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -453,7 +458,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.electricBill}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, electricBill: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, electricBill: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -465,7 +471,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.gasBill}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, gasBill: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, gasBill: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -477,7 +484,8 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     value={incomeExpensesData.fireInsurance}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, fireInsurance: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, fireInsurance: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="0"
                 />
@@ -488,7 +496,8 @@ const RealEstateRegistrationForm = () => {
                 </label>
                 <textarea
                     value={incomeExpensesData.other}
-                    onChange={(e) => setIncomeExpensesData({...incomeExpensesData, other: e.target.value})}
+                    onChange={(e) => setIncomeExpensesData(
+                        {...incomeExpensesData, other: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     rows="3"
                     placeholder="その他の費用について入力してください"
