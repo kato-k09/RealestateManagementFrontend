@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './index.css';
 import {AuthProvider, useAuth} from './context/AuthContext';
 import Login from './components/Login';
@@ -7,11 +7,19 @@ import Header from './components/Header';
 import RealEstateRegistrationForm
   from './components/RealEstateRegistrationForm';
 import RealEstateSearch from './components/RealEstateSearch';
-import UserProfile from './components/UserProfile';
+import UserProfile from "./components/UserProfile";
+import AdminUserManagement from "./components/AdminUserManagement";
 
 // メインアプリケーションコンポーネント（認証後）
 const MainApp = () => {
+  const {user} = useAuth();
   const [currentView, setCurrentView] = useState('search');
+
+  useEffect(() => {
+    if (currentView === 'admin' && user?.role !== 'ADMIN') {
+      setCurrentView('search');
+    }
+  }, [currentView, user]);
 
   return (
       <div className="min-h-screen bg-gray-50">
@@ -24,6 +32,8 @@ const MainApp = () => {
               <RealEstateRegistrationForm/>
           ) : currentView === 'profile' ? (
               <UserProfile/>
+          ) : currentView === 'admin' ? (
+              <AdminUserManagement/>
           ) : (
               <RealEstateSearch/>
           )}
