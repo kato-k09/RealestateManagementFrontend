@@ -215,6 +215,9 @@ const AdminUserManagement = () => {
                     最終ログイン
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ログイン失敗回数
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     操作
                   </th>
                 </tr>
@@ -257,6 +260,22 @@ const AdminUserManagement = () => {
                         {user.lastLoginAt ? new Date(
                                 user.lastLoginAt).toLocaleString('ja-JP')
                             : '未ログイン'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <span className={`text-sm font-medium ${
+                              user.loginFailedAttempts > 0 ? 'text-red-600'
+                                  : 'text-gray-600'
+                          }`}>
+                            {user.loginFailedAttempts || 0}回
+                          </span>
+                          {user.loginFailedAttempts >= 5 && (
+                              <span
+                                  className="ml-2 px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded-full">
+                                要注意
+                              </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
@@ -303,6 +322,14 @@ const AdminUserManagement = () => {
                           className="text-sm text-gray-500">@{selectedUser.username}</div>
                       <div
                           className="text-sm text-gray-500">{selectedUser.email}</div>
+                      <div className="text-sm text-gray-500">
+                        ログイン失敗回数: <span className={`font-medium ${
+                          selectedUser.loginFailedAttempts > 0 ? 'text-red-600'
+                              : 'text-green-600'
+                      }`}>
+                        {selectedUser.loginFailedAttempts || 0}回
+                      </span>
+                      </div>
                     </div>
 
                     {/* エラーメッセージ */}
