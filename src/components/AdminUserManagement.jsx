@@ -106,7 +106,7 @@ const AdminUserManagement = () => {
       };
 
       const response = await authenticatedFetch(
-          `http://localhost:8080/api/admin/users/${selectedUser.id}/statusChange`,
+          `http://localhost:8080/api/admin/users/${selectedUser.id}/updateStatus`,
           {
             method: 'PUT',
             body: JSON.stringify(requestData)

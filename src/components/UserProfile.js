@@ -130,7 +130,7 @@ const UserProfile = () => {
         updateData.newPassword = formData.newPassword;
       }
 
-      const response = await authenticatedFetch('/api/auth/changeUserInfo', {
+      const response = await authenticatedFetch('/api/auth/updateUserInfo', {
         method: 'PUT',
         body: JSON.stringify(updateData)
       });
