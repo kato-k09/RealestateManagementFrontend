@@ -3,6 +3,7 @@ import './index.css';
 import {AuthProvider, useAuth} from './context/AuthContext';
 import Login from './components/Login';
 import Register from './components/Register';
+import LandingPage from './components/LandingPage'; // 追加
 import Header from './components/Header';
 import RealEstateRegistrationForm
   from './components/RealEstateRegistrationForm';
@@ -45,7 +46,7 @@ const MainApp = () => {
 // 認証管理コンポーネント
 const AuthenticationManager = () => {
   const {isAuthenticated, isLoading, login, register} = useAuth();
-  const [authView, setAuthView] = useState('login'); // 'login' or 'register'
+  const [authView, setAuthView] = useState('landing'); // 'landing', 'login', 'register'
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -76,8 +77,15 @@ const AuthenticationManager = () => {
     }
   };
 
-  // ログイン画面に戻る
-  const handleBackToLogin = () => {
+  // ランディングページに戻る
+  const handleBackToLanding = () => {
+    setAuthView('landing');
+    setError('');
+    setSuccessMessage('');
+  };
+
+  // ログイン画面に移動
+  const handleGoToLogin = () => {
     setAuthView('login');
     setError('');
     setSuccessMessage('');
@@ -109,7 +117,7 @@ const AuthenticationManager = () => {
     return <MainApp/>;
   }
 
-  // 未認証の場合はログイン/登録画面を表示
+  // 未認証の場合はランディング/ログイン/登録画面を表示
   return (
       <div>
         {/* エラーメッセージ */}
@@ -144,19 +152,22 @@ const AuthenticationManager = () => {
             </div>
         )}
 
-        {/* ログイン/登録画面 */}
-        {authView === 'login' ? (
-            <div>
-              <Login
-                  onLogin={handleLogin}
-                  onSwitchToRegister={handleGoToRegister}
-                  isLoading={isLoading}
-              />
-            </div>
+        {/* ランディング/ログイン/登録画面の切り替え */}
+        {authView === 'landing' ? (
+            <LandingPage onGoToLogin={handleGoToLogin}
+             onGoToRegister={handleGoToRegister}/>
+        ) : authView === 'login' ? (
+            <Login
+                onLogin={handleLogin}
+                onSwitchToRegister={handleGoToRegister}
+                onBackToLanding={handleBackToLanding}
+                isLoading={isLoading}
+            />
         ) : (
             <Register
                 onRegister={handleRegister}
-                onBackToLogin={handleBackToLogin}
+                onBackToLogin={handleGoToLogin}
+                onBackToLanding={handleBackToLanding}
                 isLoading={isLoading}
             />
         )}

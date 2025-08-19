@@ -10,7 +10,7 @@ import {
   UserCheck
 } from 'lucide-react';
 
-const Login = ({onLogin, onSwitchToRegister, isLoading}) => {
+const Login = ({onLogin, onSwitchToRegister, onBackToLanding, isLoading}) => {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -99,6 +99,14 @@ const Login = ({onLogin, onSwitchToRegister, isLoading}) => {
             <p className="text-gray-600">
               ログインしてご利用ください
             </p>
+            <div className="text-center mb-6">
+              <button
+                onClick={onBackToLanding}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+              >
+                ← トップページに戻る
+              </button>
+            </div>
           </div>
 
           {/* ログインフォーム */}

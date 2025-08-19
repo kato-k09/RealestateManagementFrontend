@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User, Lock, Mail, Eye, EyeOff, UserPlus, ArrowLeft } from 'lucide-react';
 
-const Register = ({ onRegister, onBackToLogin, isLoading }) => {
+const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -102,6 +102,14 @@ const Register = ({ onRegister, onBackToLogin, isLoading }) => {
             <p className="text-gray-600">
               新しいアカウントを作成します
             </p>
+            <div className="text-center mb-6">
+              <button
+                onClick={onBackToLanding}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+              >
+                ← トップページに戻る
+              </button>
+            </div>
           </div>
 
           {/* 戻るボタン */}
