@@ -1,5 +1,6 @@
 {
-  "name": "realestate-management-frontend",
+  "name": "simple-isvest",
+  "description": "Simple Isvest - 不動産投資管理システム",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:8080",

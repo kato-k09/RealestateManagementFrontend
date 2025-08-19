@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Lock, Mail, Eye, EyeOff, UserPlus, ArrowLeft } from 'lucide-react';
+import { User, Lock, Mail, Eye, EyeOff, UserPlus, ArrowLeft ,Building2} from 'lucide-react';
 
 const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => {
   const [formData, setFormData] = useState({
@@ -89,12 +89,20 @@ const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => 
   };
 
   return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
         <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
           {/* ヘッダー */}
           <div className="text-center mb-8">
-            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <UserPlus className="w-8 h-8 text-green-600" />
+              <div className="flex items-center justify-center space-x-3 mb-4">
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg">
+                  <Building2 className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  Simple Isvest
+                </span>
+              </div>
+            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <UserPlus className="w-8 h-8 text-blue-600" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
               ユーザー登録
@@ -139,7 +147,7 @@ const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => 
                     name="username"
                     value={formData.username}
                     onChange={handleInputChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    className={`block w-full pl-10 pr-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.username ? 'border-red-300' : 'border-gray-300'
                     }`}
                     placeholder="ユーザー名を入力"
@@ -165,7 +173,7 @@ const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => 
                     name="displayName"
                     value={formData.displayName}
                     onChange={handleInputChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    className={`block w-full pl-10 pr-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.displayName ? 'border-red-300' : 'border-gray-300'
                     }`}
                     placeholder="表示名を入力"
@@ -191,7 +199,7 @@ const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => 
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    className={`block w-full pl-10 pr-3 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.email ? 'border-red-300' : 'border-gray-300'
                     }`}
                     placeholder="メールアドレスを入力"
@@ -217,7 +225,7 @@ const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => 
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className={`block w-full pl-10 pr-12 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    className={`block w-full pl-10 pr-12 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.password ? 'border-red-300' : 'border-gray-300'
                     }`}
                     placeholder="パスワードを入力（6文字以上）"
@@ -255,7 +263,7 @@ const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => 
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className={`block w-full pl-10 pr-12 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 ${
+                    className={`block w-full pl-10 pr-12 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                         errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
                     }`}
                     placeholder="パスワードを再入力"
@@ -286,7 +294,7 @@ const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => 
                 className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                     isLoading
                         ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+                        : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
                 }`}
             >
               {isLoading ? (

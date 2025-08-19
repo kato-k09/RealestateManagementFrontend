@@ -89,12 +89,19 @@ const Login = ({onLogin, onSwitchToRegister, onBackToLanding, isLoading}) => {
         <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
           {/* ヘッダー */}
           <div className="text-center mb-8">
-            <div
-                className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Building2 className="w-8 h-8 text-blue-600"/>
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg">
+               <Building2 className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+               Simple Isvest
+              </span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              不動産投資管理システム
+            <div className="mx-auto mb-4 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+              <LogIn className="w-8 h-8 text-blue-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              ユーザーログイン
             </h1>
             <p className="text-gray-600">
               ログインしてご利用ください

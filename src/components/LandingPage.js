@@ -59,8 +59,10 @@ const LandingPage = ({ onGoToLogin = () => {}, onGoToRegister = () => {} }) => {
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg">
                 <Building2 className="w-8 h-8 text-white" />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Real Estate Manager
+              <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                <span className="block sm:inline">Simple Isvest</span>
+                <span className="hidden sm:inline">｜</span>
+                <span className="block sm:inline text-sm sm:text-xl">シンプル・インベスト</span>
               </h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
@@ -155,8 +157,6 @@ const LandingPage = ({ onGoToLogin = () => {}, onGoToRegister = () => {} }) => {
         </div>
       </section>
 
-
-
       {/* 詳細機能 */}
       <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -229,7 +229,7 @@ const LandingPage = ({ onGoToLogin = () => {}, onGoToRegister = () => {} }) => {
       {/* サービスの特徴 */}
       <section className="bg-gradient-to-r from-indigo-600 to-purple-600 py-20 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h3 className="text-4xl font-bold mb-6">エクセル、面倒じゃないですか？</h3>
+          <h3 className="text-4xl font-bold mb-6">エクセル管理、面倒じゃないですか？</h3>
           <p className="text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
             パソコンに詳しくなくても大丈夫。あなたは画面に従って入力するだけ。<br />
             エクセルやワードを使った物件管理よりずっとシンプルになります。
@@ -263,13 +263,13 @@ const LandingPage = ({ onGoToLogin = () => {}, onGoToRegister = () => {} }) => {
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg">
                 <Building2 className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold">Real Estate Manager</span>
+              <span className="text-xl font-bold">Simple Isvest｜シンプル・インベスト</span>
             </div>
             <p className="text-gray-400 mb-4">
-              不動産投資管理システム - 不動産投資家のためのシンプルなソリューション
+              不動産投資家のためのシンプルな不動産管理アプリ
             </p>
             <p className="text-sm text-gray-500">
-              © 2025 Real Estate Manager. All rights reserved.
+              © 2025 Simple Isvest. All rights reserved.
             </p>
           </div>
         </div>
