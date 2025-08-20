@@ -45,7 +45,7 @@ const AdminUserManagement = () => {
   const fetchUsers = async () => {
     try {
       const response = await authenticatedFetch(
-          `${process.env.REACT_APP_API_BASE_URL}/admin/users`);
+          `${API_BASE_URL}/admin/users`);
 
       if (!response.ok) {
         if (response.status === 403) {
@@ -108,7 +108,7 @@ const AdminUserManagement = () => {
       };
 
       const response = await authenticatedFetch(
-          `${process.env.REACT_APP_API_BASE_URL}/admin/users/${selectedUser.id}/updateStatus`,
+          `${API_BASE_URL}/admin/users/${selectedUser.id}/updateStatus`,
           {
             method: 'PUT',
             body: JSON.stringify(requestData)
