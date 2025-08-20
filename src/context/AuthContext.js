@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const AuthContext = createContext();
 
@@ -16,58 +16,66 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // 初期化時にローカルストレージからトークンを確認
+  // 初期化時にトークン検証
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        const storedToken = localStorage.getItem('authToken');
-        if (storedToken) {
-          const isValid = await validateToken(storedToken);
-          if (isValid) {
-            setToken(storedToken);
-            setIsAuthenticated(true);
-            // ユーザー情報を取得
-            await getCurrentUser(storedToken);
-          } else {
-            // 無効なトークンの場合は削除
-            localStorage.removeItem('authToken');
-          }
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        localStorage.removeItem('authToken');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initAuth();
+    validateToken();
   }, []);
 
-  // トークンの有効性を検証
-  const validateToken = async (tokenToValidate) => {
+  // トークン検証処理（修正版）
+  const validateToken = async () => {
+    const savedToken = localStorage.getItem('authToken');
+
+    if (!savedToken) {
+      setIsAuthenticated(false);
+      setIsLoading(false);
+      return;
+    }
+
     try {
+      // /api/auth/validate を使用（より安全）
       const response = await fetch('/api/auth/validate', {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${tokenToValidate}`,
+          'Authorization': `Bearer ${savedToken}`,
           'Content-Type': 'application/json'
         }
       });
 
       if (response.ok) {
         const data = await response.json();
-        return data.valid;
+        if (data.valid) {
+          setToken(savedToken);
+          setUser(data.userInfo);
+          setIsAuthenticated(true);
+        } else {
+          // トークンが無効
+          localStorage.removeItem('authToken');
+          setToken(null);
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } else {
+        // エラーレスポンス
+        localStorage.removeItem('authToken');
+        setToken(null);
+        setUser(null);
+        setIsAuthenticated(false);
       }
-      return false;
     } catch (error) {
       console.error('Token validation error:', error);
-      return false;
+      localStorage.removeItem('authToken');
+      setToken(null);
+      setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // 現在のユーザー情報を取得
+  // 現在のユーザー情報を取得（必要に応じて使用）
   const getCurrentUser = async (tokenToUse) => {
+    if (!tokenToUse) return null;
+
     try {
       const response = await fetch('/api/auth/me', {
         method: 'GET',
