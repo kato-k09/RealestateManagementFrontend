@@ -8,8 +8,7 @@ import {
   Users
 } from 'lucide-react';
 import {useAuth} from '../context/AuthContext';
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '/api';
+import { API_BASE_URL } from '../config';
 
 const AdminUserManagement = () => {
   const {authenticatedFetch} = useAuth();
@@ -45,7 +44,7 @@ const AdminUserManagement = () => {
   const fetchUsers = async () => {
     try {
       const response = await authenticatedFetch(
-          `${API_BASE_URL}/admin/users`);
+          `${API_BASE_URL}/api/admin/users`);
 
       if (!response.ok) {
         if (response.status === 403) {
@@ -108,7 +107,7 @@ const AdminUserManagement = () => {
       };
 
       const response = await authenticatedFetch(
-          `${API_BASE_URL}/admin/users/${selectedUser.id}/updateStatus`,
+          `${API_BASE_URL}/api/admin/users/${selectedUser.id}/updateStatus`,
           {
             method: 'PUT',
             body: JSON.stringify(requestData)

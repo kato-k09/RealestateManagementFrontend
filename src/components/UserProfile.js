@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Mail, Eye, EyeOff, Save, RefreshCw, AlertCircle, CheckCircle, Trash2, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 
 const UserProfile = () => {
   const { user, authenticatedFetch, logout } = useAuth();
@@ -130,7 +131,7 @@ const UserProfile = () => {
         updateData.newPassword = formData.newPassword;
       }
 
-      const response = await authenticatedFetch('/api/auth/updateUserInfo', {
+      const response = await authenticatedFetch(`${API_BASE_URL}/api/auth/updateUserInfo`, {
         method: 'PUT',
         body: JSON.stringify(updateData)
       });
@@ -171,7 +172,7 @@ const UserProfile = () => {
   const handleDeleteUser = async () => {
     setDeleteLoading(true);
     try {
-      const response = await authenticatedFetch('/api/auth/deleteUser', {
+      const response = await authenticatedFetch(`${API_BASE_URL}/api/auth/deleteUser`, {
         method: 'DELETE'
       });
 

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-
+import { API_BASE_URL } from '../config';
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       // /api/auth/validate を使用（より安全）
-      const response = await fetch('/api/auth/validate', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/validate`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${savedToken}`,
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
     if (!tokenToUse) return null;
 
     try {
-      const response = await fetch('/api/auth/me', {
+      const response = await fetch(`${API_BASE_URL}/auth/me`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${tokenToUse}`,
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // サーバーにログアウト要求を送信（オプション）
       if (token) {
-        await fetch('/api/auth/logout', {
+        await fetch(`${API_BASE_URL}/api/auth/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -163,7 +163,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (registerData) => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
