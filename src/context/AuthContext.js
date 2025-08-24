@@ -72,30 +72,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // 現在のユーザー情報を取得（必要に応じて使用）
-  const getCurrentUser = async (tokenToUse) => {
-    if (!tokenToUse) return null;
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/auth/me`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${tokenToUse}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        return userData;
-      }
-    } catch (error) {
-      console.error('Get current user error:', error);
-    }
-    return null;
-  };
-
   // ログイン処理
   const login = async (credentials) => {
     setIsLoading(true);

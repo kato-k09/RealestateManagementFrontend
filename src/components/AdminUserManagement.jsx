@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   AlertTriangle,
   CheckCircle,
@@ -27,21 +27,8 @@ const AdminUserManagement = () => {
     unlockAccount: false
   });
 
-  // 初期データ取得
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    if (success) {
-      const timer = setTimeout(() => {
-        setSuccess('');
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [success]);
-
-  const fetchUsers = async () => {
+  // fetchUsers関数をuseCallbackでメモ化
+  const fetchUsers = useCallback(async () => {
     try {
       const response = await authenticatedFetch(
           `${API_BASE_URL}/admin/users`);
@@ -62,7 +49,21 @@ const AdminUserManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [authenticatedFetch]); // authenticatedFetchが変更された場合のみ再作成
+
+  // 初期データ取得
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]); // 警告が解消される
+
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   const openModal = (user) => {
     setSelectedUser(user);

@@ -7,7 +7,6 @@ import {
   Shield,
   BarChart3,
   Users,
-  Clock,
   CheckCircle,
   ArrowRight,
   LogIn,

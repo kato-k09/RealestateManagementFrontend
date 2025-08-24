@@ -7,7 +7,6 @@ const Header = ({currentView, setCurrentView}) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleLogout = async () => {
-    const isAdmin = user?.role === 'ADMIN';
     try {
       await logout();
     } catch (error) {
