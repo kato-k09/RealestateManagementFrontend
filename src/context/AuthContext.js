@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       // /api/auth/validate を使用（より安全）
-      const response = await fetch(`${API_BASE_URL}/api/auth/validate`, {
+      const response = await fetch(`${API_BASE_URL}/auth/validate`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${savedToken}`,
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // サーバーにログアウト要求を送信（オプション）
       if (token) {
-        await fetch(`${API_BASE_URL}/api/auth/logout`, {
+        await fetch(`${API_BASE_URL}/auth/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -163,7 +163,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (registerData) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

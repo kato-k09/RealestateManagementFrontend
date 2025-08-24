@@ -12,6 +12,7 @@ import {
   X
 } from 'lucide-react';
 import {useAuth} from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 
 const RealEstateSearch = () => {
   const {authenticatedFetch} = useAuth(); // 認証機能のみ追加
@@ -51,8 +52,8 @@ const RealEstateSearch = () => {
       });
 
       const url = queryParams.toString()
-          ? `/searchRealestate?${queryParams.toString()}`
-          : '/searchRealestate';
+          ? `${API_BASE_URL}/searchRealestate?${queryParams.toString()}`
+          : `${API_BASE_URL}/searchRealestate`;
 
       // 認証対応のfetchに変更
       const response = await authenticatedFetch(url, {
@@ -152,7 +153,7 @@ const RealEstateSearch = () => {
   const handleSaveEdit = async () => {
     try {
       // 認証対応のfetchに変更
-      const response = await authenticatedFetch('/updateRealestate', {
+      const response = await authenticatedFetch(`${API_BASE_URL}/updateRealestate`, {
         method: 'PUT',
         body: JSON.stringify(editingProperty)
       });
@@ -204,7 +205,7 @@ const RealEstateSearch = () => {
 
       // 認証対応のfetchに変更
       const response = await authenticatedFetch(
-          `/deleteRealestate/${projectId}`, {
+          `${API_BASE_URL}/deleteRealestate/${projectId}`, {
             method: 'DELETE'
           });
 

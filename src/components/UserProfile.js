@@ -131,7 +131,7 @@ const UserProfile = () => {
         updateData.newPassword = formData.newPassword;
       }
 
-      const response = await authenticatedFetch(`${API_BASE_URL}/api/auth/updateUserInfo`, {
+      const response = await authenticatedFetch(`${API_BASE_URL}/auth/updateUserInfo`, {
         method: 'PUT',
         body: JSON.stringify(updateData)
       });
@@ -172,7 +172,7 @@ const UserProfile = () => {
   const handleDeleteUser = async () => {
     setDeleteLoading(true);
     try {
-      const response = await authenticatedFetch(`${API_BASE_URL}/api/auth/deleteUser`, {
+      const response = await authenticatedFetch(`${API_BASE_URL}/auth/deleteUser`, {
         method: 'DELETE'
       });
 

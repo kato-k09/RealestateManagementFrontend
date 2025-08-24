@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {useAuth} from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 
 const RealEstateRegistrationForm = () => {
   const {authenticatedFetch} = useAuth(); // 認証付きfetch関数を取得
@@ -86,7 +87,7 @@ const RealEstateRegistrationForm = () => {
       };
 
       // 認証付きfetchを使用
-      const response = await authenticatedFetch('/registerRealestate', {
+      const response = await authenticatedFetch(`${API_BASE_URL}/registerRealestate`, {
         method: 'POST',
         body: JSON.stringify(formattedData)
       });
