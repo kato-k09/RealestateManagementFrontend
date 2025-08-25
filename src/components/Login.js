@@ -94,7 +94,7 @@ const Login = ({onLogin, onSwitchToRegister, onBackToLanding, isLoading}) => {
                <Building2 className="w-6 h-6 text-white" />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-               Simple Isvest
+               Simple iSvest
               </span>
             </div>
             <div className="mx-auto mb-4 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
