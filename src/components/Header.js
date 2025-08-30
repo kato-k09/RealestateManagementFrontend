@@ -7,7 +7,6 @@ const Header = ({currentView, setCurrentView}) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleLogout = async () => {
-    const isAdmin = user?.role === 'ADMIN';
     try {
       await logout();
     } catch (error) {
@@ -24,7 +23,7 @@ const Header = ({currentView, setCurrentView}) => {
             {/* ロゴとタイトル */}
             <div className="flex items-center space-x-3">
               <Building2 className="w-8 h-8"/>
-              <h1 className="text-xl font-bold">Simple Isvest｜シンプル・インベスト</h1>
+              <h1 className="text-xl font-bold">Simple iSvest｜シンプル・イズベスト</h1>
             </div>
 
             {/* ナビゲーションメニュー */}

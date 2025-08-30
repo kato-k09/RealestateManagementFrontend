@@ -7,7 +7,6 @@ import {
   Shield,
   BarChart3,
   Users,
-  Clock,
   CheckCircle,
   ArrowRight,
   LogIn,
@@ -60,9 +59,9 @@ const LandingPage = ({ onGoToLogin = () => {}, onGoToRegister = () => {} }) => {
                 <Building2 className="w-8 h-8 text-white" />
               </div>
               <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                <span className="block sm:inline">Simple Isvest</span>
+                <span className="block sm:inline">Simple iSvest</span>
                 <span className="hidden sm:inline">｜</span>
-                <span className="block sm:inline text-sm sm:text-xl">シンプル・インベスト</span>
+                <span className="block sm:inline text-sm sm:text-xl">シンプル・イズベスト</span>
               </h1>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
@@ -263,13 +262,13 @@ const LandingPage = ({ onGoToLogin = () => {}, onGoToRegister = () => {} }) => {
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg">
                 <Building2 className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold">Simple Isvest｜シンプル・インベスト</span>
+              <span className="text-xl font-bold">Simple iSvest｜シンプル・イズベスト</span>
             </div>
             <p className="text-gray-400 mb-4">
               不動産投資家のためのシンプルな不動産管理アプリ
             </p>
             <p className="text-sm text-gray-500">
-              © 2025 Simple Isvest. All rights reserved.
+              © 2025 Simple iSvest. All rights reserved.
             </p>
           </div>
         </div>

@@ -12,6 +12,7 @@ import {
   X
 } from 'lucide-react';
 import {useAuth} from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 
 const RealEstateSearch = () => {
   const {authenticatedFetch} = useAuth(); // 認証機能のみ追加
@@ -20,7 +21,7 @@ const RealEstateSearch = () => {
   const [error, setError] = useState('');
   const [searchParams, setSearchParams] = useState({
     searchProjectName: '',
-    searchParcelAddress: '',
+    searchLandParcelAddress: '',
     searchBuildingType: '',
     searchBuildingStructure: '',
     searchFinancing: null
@@ -51,8 +52,8 @@ const RealEstateSearch = () => {
       });
 
       const url = queryParams.toString()
-          ? `/searchRealestate?${queryParams.toString()}`
-          : '/searchRealestate';
+          ? `${API_BASE_URL}/searchRealestate?${queryParams.toString()}`
+          : `${API_BASE_URL}/searchRealestate`;
 
       // 認証対応のfetchに変更
       const response = await authenticatedFetch(url, {
@@ -87,7 +88,7 @@ const RealEstateSearch = () => {
   const handleReset = () => {
     setSearchParams({
       searchProjectName: '',
-      searchParcelAddress: '',
+      searchLandParcelAddress: '',
       searchBuildingType: '',
       searchBuildingStructure: '',
       searchFinancing: null
@@ -110,12 +111,12 @@ const RealEstateSearch = () => {
         projectName: '',
         isDeleted: false
       },
-      parcel: property.parcel ? {...property.parcel} : {
-        parcelPrice: 0,
-        parcelAddress: '',
-        parcelCategory: '',
-        parcelSize: 0,
-        parcelRemark: '',
+      landParcel: property.landParcel ? {...property.landParcel} : {
+        landParcelPrice: 0,
+        landParcelAddress: '',
+        landParcelCategory: '',
+        landParcelSize: 0,
+        landParcelRemark: '',
         isDeleted: false
       },
       building: property.building ? {...property.building} : {
@@ -152,7 +153,7 @@ const RealEstateSearch = () => {
   const handleSaveEdit = async () => {
     try {
       // 認証対応のfetchに変更
-      const response = await authenticatedFetch('/updateRealestate', {
+      const response = await authenticatedFetch(`${API_BASE_URL}/updateRealestate`, {
         method: 'PUT',
         body: JSON.stringify(editingProperty)
       });
@@ -204,7 +205,7 @@ const RealEstateSearch = () => {
 
       // 認証対応のfetchに変更
       const response = await authenticatedFetch(
-          `/deleteRealestate/${projectId}`, {
+          `${API_BASE_URL}/deleteRealestate/${projectId}`, {
             method: 'DELETE'
           });
 
@@ -303,7 +304,7 @@ const RealEstateSearch = () => {
     }
 
     const annualRent = property.incomeAndExpenses.rent * 12;
-    const totalPrice = (property.parcel?.parcelPrice || 0)
+    const totalPrice = (property.landParcel?.landParcelPrice || 0)
         + (property.building?.buildingPrice || 0);
 
     if (totalPrice === 0) {
@@ -336,7 +337,7 @@ const RealEstateSearch = () => {
           (property.incomeAndExpenses.interest || 0)) * 12;
     }
 
-    const totalPrice = (property.parcel?.parcelPrice || 0)
+    const totalPrice = (property.landParcel?.landParcelPrice || 0)
         + (property.building?.buildingPrice || 0);
 
     if (totalPrice === 0) {
@@ -374,7 +375,7 @@ const RealEstateSearch = () => {
 
     realEstateList.forEach(property => {
       // 取得価格の合計
-      totals.acquisitionPrice += (property.parcel?.parcelPrice || 0)
+      totals.acquisitionPrice += (property.landParcel?.landParcelPrice || 0)
           + (property.building?.buildingPrice || 0);
 
       // 家賃収入の合計
@@ -469,9 +470,9 @@ const RealEstateSearch = () => {
               </label>
               <input
                   type="text"
-                  value={searchParams.searchParcelAddress}
+                  value={searchParams.searchLandParcelAddress}
                   onChange={(e) => setSearchParams(
-                      {...searchParams, searchParcelAddress: e.target.value})}
+                      {...searchParams, searchLandParcelAddress: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="住所を入力"
               />
@@ -625,14 +626,14 @@ const RealEstateSearch = () => {
                               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 text-sm text-gray-600">
                             <div className="flex items-center">
                               <MapPin className="mr-1" size={16}/>
-                              <span>{property.parcel?.parcelAddress
+                              <span>{property.landParcel?.landParcelAddress
                                   || '住所未設定'}</span>
                             </div>
 
                             <div className="flex items-center">
                               <Building2 className="mr-1" size={16}/>
                               <span>{property.building?.buildingType
-                                  || property.parcel?.parcelCategory
+                                  || property.landParcel?.landParcelCategory
                                   || '種別未設定'}</span>
                             </div>
 
@@ -705,7 +706,7 @@ const RealEstateSearch = () => {
                           <div className="font-medium text-blue-800">取得価格
                           </div>
                           <div className="text-blue-600">{formatPrice(
-                              (property.parcel?.parcelPrice || 0)
+                              (property.landParcel?.landParcelPrice || 0)
                               + (property.building?.buildingPrice || 0))}</div>
                         </div>
                         <div className="bg-green-50 p-3 rounded">
@@ -867,19 +868,19 @@ const RealEstateSearch = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div><span
                           className="font-medium">価格:</span> {formatPrice(
-                          selectedProperty.parcel?.parcelPrice)}</div>
+                          selectedProperty.landParcel?.landParcelPrice)}</div>
                       <div><span
-                          className="font-medium">住所:</span> {selectedProperty.parcel?.parcelAddress
+                          className="font-medium">住所:</span> {selectedProperty.landParcel?.landParcelAddress
                           || '未設定'}</div>
                       <div><span
-                          className="font-medium">地目:</span> {selectedProperty.parcel?.parcelCategory
+                          className="font-medium">地目:</span> {selectedProperty.landParcel?.landParcelCategory
                           || '未設定'}</div>
                       <div><span
-                          className="font-medium">面積:</span> {selectedProperty.parcel?.parcelSize
-                          ? `${selectedProperty.parcel.parcelSize}㎡` : '未設定'}
+                          className="font-medium">面積:</span> {selectedProperty.landParcel?.landParcelSize
+                          ? `${selectedProperty.landParcel.landParcelSize}㎡` : '未設定'}
                       </div>
                       <div className="md:col-span-2"><span
-                          className="font-medium">備考:</span> {selectedProperty.parcel?.parcelRemark
+                          className="font-medium">備考:</span> {selectedProperty.landParcel?.landParcelRemark
                           || '未設定'}</div>
                     </div>
                   </div>
@@ -1047,9 +1048,9 @@ const RealEstateSearch = () => {
                           (円)</label>
                         <input
                             type="number"
-                            value={editingProperty.parcel?.parcelPrice || ''}
-                            onChange={(e) => updateEditingProperty('parcel',
-                                'parcelPrice', parseInt(e.target.value) || 0)}
+                            value={editingProperty.landParcel?.landParcelPrice || ''}
+                            onChange={(e) => updateEditingProperty('landParcel',
+                                'landParcelPrice', parseInt(e.target.value) || 0)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                       </div>
@@ -1058,9 +1059,9 @@ const RealEstateSearch = () => {
                             className="block text-sm font-medium text-gray-700 mb-2">住所</label>
                         <input
                             type="text"
-                            value={editingProperty.parcel?.parcelAddress || ''}
-                            onChange={(e) => updateEditingProperty('parcel',
-                                'parcelAddress', e.target.value)}
+                            value={editingProperty.landParcel?.landParcelAddress || ''}
+                            onChange={(e) => updateEditingProperty('landParcel',
+                                'landParcelAddress', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                       </div>
@@ -1069,9 +1070,9 @@ const RealEstateSearch = () => {
                             className="block text-sm font-medium text-gray-700 mb-2">地目</label>
                         <input
                             type="text"
-                            value={editingProperty.parcel?.parcelCategory || ''}
-                            onChange={(e) => updateEditingProperty('parcel',
-                                'parcelCategory', e.target.value)}
+                            value={editingProperty.landParcel?.landParcelCategory || ''}
+                            onChange={(e) => updateEditingProperty('landParcel',
+                                'landParcelCategory', e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="地目を入力"
                         />
@@ -1083,9 +1084,9 @@ const RealEstateSearch = () => {
                         <input
                             type="number"
                             step="0.01"
-                            value={editingProperty.parcel?.parcelSize || ''}
-                            onChange={(e) => updateEditingProperty('parcel',
-                                'parcelSize', parseFloat(e.target.value) || 0)}
+                            value={editingProperty.landParcel?.landParcelSize || ''}
+                            onChange={(e) => updateEditingProperty('landParcel',
+                                'landParcelSize', parseFloat(e.target.value) || 0)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                       </div>

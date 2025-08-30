@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {useAuth} from '../context/AuthContext';
+import { API_BASE_URL } from '../config';
 
 const RealEstateRegistrationForm = () => {
   const {authenticatedFetch} = useAuth(); // 認証付きfetch関数を取得
@@ -10,12 +11,12 @@ const RealEstateRegistrationForm = () => {
     isDeleted: false
   });
 
-  const [parcelData, setParcelData] = useState({
-    parcelPrice: '',
-    parcelAddress: '',
-    parcelCategory: '',
-    parcelSize: '',
-    parcelRemark: '',
+  const [landParcelData, setLandParcelData] = useState({
+    landParcelPrice: '',
+    landParcelAddress: '',
+    landParcelCategory: '',
+    landParcelSize: '',
+    landParcelRemark: '',
     isDeleted: false
   });
 
@@ -59,10 +60,10 @@ const RealEstateRegistrationForm = () => {
         project: {
           ...projectData
         },
-        parcel: {
-          ...parcelData,
-          parcelPrice: parseInt(parcelData.parcelPrice) || 0,
-          parcelSize: parseFloat(parcelData.parcelSize) || 0.0
+        landParcel: {
+          ...landParcelData,
+          landParcelPrice: parseInt(landParcelData.landParcelPrice) || 0,
+          landParcelSize: parseFloat(landParcelData.landParcelSize) || 0.0
         },
         building: {
           ...buildingData,
@@ -86,7 +87,7 @@ const RealEstateRegistrationForm = () => {
       };
 
       // 認証付きfetchを使用
-      const response = await authenticatedFetch('/registerRealestate', {
+      const response = await authenticatedFetch(`${API_BASE_URL}/registerRealestate`, {
         method: 'POST',
         body: JSON.stringify(formattedData)
       });
@@ -118,9 +119,9 @@ const RealEstateRegistrationForm = () => {
 
   const resetForm = () => {
     setProjectData({projectName: '', isDeleted: false});
-    setParcelData({
-      parcelPrice: '', parcelAddress: '', parcelCategory: '',
-      parcelSize: '', parcelRemark: '', isDeleted: false
+    setLandParcelData({
+      landParcelPrice: '', landParcelAddress: '', landParcelCategory: '',
+      landParcelSize: '', landParcelRemark: '', isDeleted: false
     });
     setBuildingData({
       buildingPrice: '',
@@ -182,9 +183,9 @@ const RealEstateRegistrationForm = () => {
                 </label>
                 <input
                     type="number"
-                    value={parcelData.parcelPrice}
-                    onChange={(e) => setParcelData(
-                        {...parcelData, parcelPrice: e.target.value})}
+                    value={landParcelData.landParcelPrice}
+                    onChange={(e) => setLandParcelData(
+                        {...landParcelData, landParcelPrice: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="0"
                 />
@@ -195,9 +196,9 @@ const RealEstateRegistrationForm = () => {
                 </label>
                 <input
                     type="text"
-                    value={parcelData.parcelAddress}
-                    onChange={(e) => setParcelData(
-                        {...parcelData, parcelAddress: e.target.value})}
+                    value={landParcelData.landParcelAddress}
+                    onChange={(e) => setLandParcelData(
+                        {...landParcelData, landParcelAddress: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="土地住所を入力してください"
                 />
@@ -208,9 +209,9 @@ const RealEstateRegistrationForm = () => {
                 </label>
                 <input
                     type="text"
-                    value={parcelData.parcelCategory}
-                    onChange={(e) => setParcelData(
-                        {...parcelData, parcelCategory: e.target.value})}
+                    value={landParcelData.landParcelCategory}
+                    onChange={(e) => setLandParcelData(
+                        {...landParcelData, landParcelCategory: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="地目を入力してください（例：宅地、田、畑、山林など）"
                 />
@@ -222,9 +223,9 @@ const RealEstateRegistrationForm = () => {
                 <input
                     type="number"
                     step="0.01"
-                    value={parcelData.parcelSize}
-                    onChange={(e) => setParcelData(
-                        {...parcelData, parcelSize: e.target.value})}
+                    value={landParcelData.landParcelSize}
+                    onChange={(e) => setLandParcelData(
+                        {...landParcelData, landParcelSize: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     placeholder="0.00"
                 />
@@ -234,9 +235,9 @@ const RealEstateRegistrationForm = () => {
                   土地備考
                 </label>
                 <textarea
-                    value={parcelData.parcelRemark}
-                    onChange={(e) => setParcelData(
-                        {...parcelData, parcelRemark: e.target.value})}
+                    value={landParcelData.landParcelRemark}
+                    onChange={(e) => setLandParcelData(
+                        {...landParcelData, landParcelRemark: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                     rows="3"
                     placeholder="土地に関する備考を入力してください"

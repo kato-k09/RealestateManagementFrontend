@@ -98,7 +98,7 @@ const Register = ({ onRegister, onBackToLogin, onBackToLanding, isLoading }) => 
                   <Building2 className="w-6 h-6 text-white" />
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                  Simple Isvest
+                  Simple iSvest
                 </span>
               </div>
             <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">

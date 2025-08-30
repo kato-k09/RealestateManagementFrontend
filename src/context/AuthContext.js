@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-
+import { API_BASE_URL } from '../config';
 const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       // /api/auth/validate を使用（より安全）
-      const response = await fetch('/api/auth/validate', {
+      const response = await fetch(`${API_BASE_URL}/auth/validate`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${savedToken}`,
@@ -72,35 +72,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // 現在のユーザー情報を取得（必要に応じて使用）
-  const getCurrentUser = async (tokenToUse) => {
-    if (!tokenToUse) return null;
-
-    try {
-      const response = await fetch('/api/auth/me', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${tokenToUse}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        return userData;
-      }
-    } catch (error) {
-      console.error('Get current user error:', error);
-    }
-    return null;
-  };
-
   // ログイン処理
   const login = async (credentials) => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -140,7 +116,7 @@ export const AuthProvider = ({ children }) => {
     try {
       // サーバーにログアウト要求を送信（オプション）
       if (token) {
-        await fetch('/api/auth/logout', {
+        await fetch(`${API_BASE_URL}/auth/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -163,7 +139,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (registerData) => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
